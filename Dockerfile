@@ -1,0 +1,28 @@
+# Install debian buster
+FROM debian:buster
+
+# Upgrade the systeme
+RUN apt update && apt upgrade -y
+
+# Install nginx, mariadb and phpmyadmin
+RUN apt install -y nginx mariadb-server php-fpm php-mysql libnss3-tools
+
+# Install mkcert for local ssl
+RUN mkdir ./mkcert
+COPY /srcs/mkcert ./mkcert/
+RUN chmod +x ./mkcert/mkcert && ./mkcert/mkcert -install && ./mkcert/mkcert caiocorp.com
+
+# Nginx config
+COPY /srcs/caiocorp /etc/nginx/sites-available
+COPY srcs/indextest.html /var/www/html
+COPY srcs/phpinfo.php /var/www/html
+RUN ln -s /etc/nginx/sites-available/caiocorp /etc/nginx/sites-enabled/
+
+# Install phpmyadmin
+RUN mkdir /var/www/html/phpmyadmin
+COPY srcs/phpMyAdmin-4.9.0.1-english.tar.gz ./
+RUN tar xzf phpMyAdmin-4.9.0.1-english.tar.gz --strip-components=1 -C /var/www/html/phpmyadmin && rm -rf ./phpMyAdmin-4.9.0.1-english.tar.gz
+COPY srcs/config.inc.php /var/www/html/phpmyadmin
+RUN chown -R www-data:www-data /var/www/html/phpmyadmin
+# Lauch services and start the container
+CMD service nginx start && service php7.3-fpm start && service mysql start && sleep infinity & wait
