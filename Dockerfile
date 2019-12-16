@@ -15,7 +15,6 @@ RUN chmod +x ./mkcert/mkcert && ./mkcert/mkcert -install && ./mkcert/mkcert caio
 # Nginx config
 COPY /srcs/caiocorp /etc/nginx/sites-available
 COPY srcs/indextest.html /var/www/html
-COPY srcs/phpinfo.php /var/www/html
 RUN ln -s /etc/nginx/sites-available/caiocorp /etc/nginx/sites-enabled/
 
 # Install phpmyadmin
@@ -24,5 +23,11 @@ COPY srcs/phpMyAdmin-4.9.0.1-english.tar.gz ./
 RUN tar xzf phpMyAdmin-4.9.0.1-english.tar.gz --strip-components=1 -C /var/www/html/phpmyadmin && rm -rf ./phpMyAdmin-4.9.0.1-english.tar.gz
 COPY srcs/config.inc.php /var/www/html/phpmyadmin
 RUN chown -R www-data:www-data /var/www/html/phpmyadmin
+
+# Install wordpress
+COPY srcs/wordpress.tar.gz ./
+RUN tar xzf wordpress.tar.gz --strip-components=1 -C /var/www/html && rm -rf wordpress.tar.gz
+COPY srcs/wp-config.php /var/www/html
 # Lauch services and start the container
-CMD service nginx start && service php7.3-fpm start && service mysql start && sleep infinity & wait
+COPY /srcs/sql_init.sh ./
+CMD /bin/bash ./sql_init.sh && sleep infinity & wait

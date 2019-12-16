@@ -17,7 +17,7 @@ server {
 	ssl_certificate_key /caiocorp.com-key.pem;
 
 	root /var/www/html;
-	index indextest.html;
+	index index.php indextest.html;
 
 	error_log /var/log/nginx/error_log;
 	access_log /var/log/nginx/access_log;
