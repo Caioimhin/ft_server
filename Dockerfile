@@ -10,12 +10,12 @@ RUN apt install -y nginx mariadb-server php-fpm php-mysql libnss3-tools
 # Install mkcert for local ssl
 RUN mkdir ./mkcert
 COPY /srcs/mkcert ./mkcert/
-RUN chmod +x ./mkcert/mkcert && ./mkcert/mkcert -install && ./mkcert/mkcert caiocorp.com
+RUN chmod +x ./mkcert/mkcert && ./mkcert/mkcert -install && ./mkcert/mkcert localhost.com
 
 # Nginx config
-COPY /srcs/caiocorp /etc/nginx/sites-available
+COPY /srcs/localhost /etc/nginx/sites-available
 COPY srcs/indextest.html /var/www/html
-RUN ln -s /etc/nginx/sites-available/caiocorp /etc/nginx/sites-enabled/
+RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/
 
 # Install phpmyadmin
 RUN mkdir /var/www/html/phpmyadmin
