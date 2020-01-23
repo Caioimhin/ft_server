@@ -19,6 +19,7 @@ RUN ln -s /etc/nginx/sites-available/localhost /etc/nginx/sites-enabled/
 
 # Install phpmyadmin
 RUN mkdir /var/www/html/phpmyadmin
+COPY srcs/info.php /var/www/html
 COPY srcs/phpMyAdmin-4.9.0.1-english.tar.gz ./
 RUN tar xzf phpMyAdmin-4.9.0.1-english.tar.gz --strip-components=1 -C /var/www/html/phpmyadmin && rm -rf ./phpMyAdmin-4.9.0.1-english.tar.gz
 COPY srcs/config.inc.php /var/www/html/phpmyadmin
